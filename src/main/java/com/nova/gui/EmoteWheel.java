@@ -19,8 +19,8 @@ import java.io.IOException;
  * A quick tap keeps the wheel open instead, so you can click one.
  */
 public class EmoteWheel extends GuiScreen {
-    private static final float OUTER = 96f;
-    private static final float INNER = 32f;
+    private static final float OUTER = 118f;
+    private static final float INNER = 34f;
     private static final long TAP_MS = 250;
 
     private final KeyBinding key;
@@ -51,10 +51,15 @@ public class EmoteWheel extends GuiScreen {
         return code < 0 ? Mouse.isButtonDown(code + 100) : Keyboard.isKeyDown(code);
     }
 
+    /** Shrinks the wheel on small windows so it and the hint below it fit. */
+    private float fit() {
+        return Math.min(1f, (height / 2f - 18f) / (OUTER + 6f));
+    }
+
     /** Which emote the mouse points at, or -1 in the middle. Emote 0 is at the top, going clockwise. */
     private int hovered(int mouseX, int mouseY) {
         float dx = mouseX - width / 2f, dy = mouseY - height / 2f;
-        double dist = Math.sqrt(dx * dx + dy * dy);
+        double dist = Math.sqrt(dx * dx + dy * dy) / fit();
         if (dist < INNER) return -1;
         double deg = Math.toDegrees(Math.atan2(dy, dx)) + 90;
         int count = Emote.values().length;
@@ -84,7 +89,8 @@ public class EmoteWheel extends GuiScreen {
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(cx, cy, 0);
-        GlStateManager.scale(0.85f + 0.15f * o, 0.85f + 0.15f * o, 1f);
+        float scale = (0.85f + 0.15f * o) * fit();
+        GlStateManager.scale(scale, scale, 1f);
         GlStateManager.translate(-cx, -cy, 0);
 
         Emote[] emotes = Emote.values();
@@ -99,9 +105,10 @@ public class EmoteWheel extends GuiScreen {
             // thin dividers between the slices
             Render.arc(cx, cy, OUTER, OUTER - INNER, i * step - step / 2f - 0.4f, 0.8f, Render.alpha(0x30FFFFFF, o));
             double rad = Math.toRadians(i * step - 90);
-            float r = (OUTER + INNER) / 2f + h * 2f;
+            // labels sit toward the outer edge, where the slices are widest
+            float r = INNER + (OUTER - INNER) * 0.62f + h * 2f;
             float lx = cx + (float) Math.cos(rad) * r, ly = cy + (float) Math.sin(rad) * r;
-            Fonts.MEDIUM.drawCentered(emotes[i].displayName, lx, ly - Fonts.MEDIUM.getHeight() / 2f, Render.alpha(Render.mix(Ui.TEXT_DIM, Ui.TEXT, h), o));
+            Fonts.REGULAR.drawCentered(emotes[i].displayName, lx, ly - Fonts.REGULAR.getHeight() / 2f, Render.alpha(Render.mix(Ui.TEXT_DIM, Ui.TEXT, h), o));
         }
         Render.arc(cx, cy, OUTER, 1f, 0, 360, Render.alpha(0x40FFFFFF, o));
 
@@ -112,7 +119,7 @@ public class EmoteWheel extends GuiScreen {
         GlStateManager.popMatrix();
 
         String hint = keyWasReleased ? "Click an emote  |  Move to stop" : "Let go to play  |  Move to stop";
-        Fonts.SMALL.drawCentered(hint, cx, cy + OUTER + 14, Render.alpha(Ui.TEXT_DIM, o));
+        Fonts.SMALL.drawCentered(hint, cx, cy + (OUTER + 6) * fit() + 4, Render.alpha(Ui.TEXT_DIM, o));
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

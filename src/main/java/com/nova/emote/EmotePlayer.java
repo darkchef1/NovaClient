@@ -60,14 +60,28 @@ public final class EmotePlayer {
         if (mc.thePlayer == null || mc.thePlayer.isDead || (acting && mc.currentScreen == null) || over) stop();
     }
 
+    /** How much of the emote shows right now: fades in at the start and out at the end. */
+    private static float blend(float t) {
+        float blend = Math.min(1f, t / BLEND);
+        if (!current.loops) blend = Math.min(blend, Math.max(0f, (current.duration - t) / BLEND));
+        return blend;
+    }
+
+    /** Moves or turns the whole body, for emotes like headspins (see MixinRenderPlayer). */
+    public static void moveBody(Entity entity) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (current == null || entity != mc.thePlayer || mc.gameSettings.thirdPersonView == 0) return;
+        float t = elapsedTicks();
+        current.body(t, blend(t));
+    }
+
     /** Applies the emote to a player model after Minecraft has posed it (see MixinModelPlayer). */
     public static void apply(ModelPlayer model, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();
         if (current == null || entity != mc.thePlayer || mc.gameSettings.thirdPersonView == 0) return;
 
         float t = elapsedTicks();
-        float blend = Math.min(1f, t / BLEND);
-        if (!current.loops) blend = Math.min(blend, Math.max(0f, (current.duration - t) / BLEND));
+        float blend = blend(t);
 
         ModelRenderer[] parts = {model.bipedHead, model.bipedBody, model.bipedRightArm, model.bipedLeftArm, model.bipedRightLeg, model.bipedLeftLeg};
         float[][] before = new float[parts.length][];

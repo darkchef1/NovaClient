@@ -34,7 +34,8 @@ Nova reads it every 5 minutes, and players on it also get a small Nova star next
 ## Emotes
 
 Hold **B** (change it in Options → Controls), point at an emote, and let go. A quick tap keeps the
-wheel open so you can click one instead. **Wave, Dab, Floss, Clap, Salute, T-Pose, Facepalm, Cheer.**
+wheel open so you can click one instead. **Wave, Dab, Floss, Clap, Salute, T-Pose, Facepalm, Cheer,
+Twerk, Breakdance (headspin), Groove, Pump It, L Dance, Spin.**
 
 The camera turns to the front while you emote (turn this off in the Emotes mod's settings). Moving,
 jumping, sneaking or clicking stops the emote. Emotes are only on your screen: showing them to other
