@@ -40,6 +40,10 @@ public class NovaMainMenu extends GuiScreen {
     }
 
     private final Ui.Hovers hovers = new Ui.Hovers();
+    /** How far the 3D player is spun around; it eases back to facing you after you let go. */
+    private final Anim spin = new Anim(4f, 0f);
+    private boolean draggingPlayer;
+    private int lastDragX;
     private long openedAt;
 
     @Override
@@ -93,6 +97,9 @@ public class NovaMainMenu extends GuiScreen {
     private static final float LOGO_CENTER = 24;
     private static final float BUTTONS_TOP = 108;
     private static final float BLOCK_H = BUTTONS_TOP + BUTTONS.length * (BUTTON_H + BUTTON_GAP) - BUTTON_GAP;
+    /** The 3D player stands this far right of the block's center, and is this many pixels per block tall. */
+    private static final float PLAYER_X = BUTTON_W / 2f + 70;
+    private static final float PLAYER_SIZE = 64;
 
     /** How much to shrink the block so it fits between the corner texts. */
     private float blockScale() {
@@ -146,6 +153,7 @@ public class NovaMainMenu extends GuiScreen {
             int textColor = Render.alpha(Render.mix(0xFFC8C8D2, 0xFFFFFFFF, h), appear);
             Fonts.MEDIUM.drawCentered(BUTTONS[i], h * 2f, Fonts.MEDIUM.centerY(y, BUTTON_H), textColor);
         }
+        drawPlayer(lx, ly, Anim.easeOut((since - 450) / 500f));
         GlStateManager.popMatrix();
 
         drawCorners(mouseX, mouseY, Anim.easeOut((since - 500) / 500f));
@@ -168,6 +176,30 @@ public class NovaMainMenu extends GuiScreen {
 
         Fonts.HUGE.drawSpaced("NOVA", cx, cy + 28, 5f, Render.alpha(0xFFFFFFFF, appear));
         Fonts.SMALL.drawSpaced("CLIENT", cx, cy + 28 + Fonts.HUGE.getHeight() + 1, 4f, Render.alpha(accent, appear));
+    }
+
+    /** Your skin in 3D, standing to the right of the buttons. Drag it to spin it around. */
+    private void drawPlayer(float lx, float ly, float appear) {
+        if (appear <= 0) return;
+        float feetY = BLOCK_H + (1f - appear) * 12f;
+        float headY = feetY - PLAYER_SIZE * 1.62f;
+
+        Render.glow(PLAYER_X, feetY - PLAYER_SIZE * 0.95f, PLAYER_SIZE * 1.15f, NovaClient.accent(), 0.55f * appear);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(PLAYER_X, feetY, 0);
+        GlStateManager.scale(1f, 0.22f, 1f);
+        Render.glow(0, 0, PLAYER_SIZE * 0.5f, 0xFF000000, 1.6f * appear);
+        GlStateManager.popMatrix();
+
+        if (!draggingPlayer) spin.setTarget(0f);
+        PlayerPreview.draw(PLAYER_X, feetY, PLAYER_SIZE, spin.get(), lx - PLAYER_X, ly - headY);
+
+        String name = mc.getSession().getUsername();
+        Fonts.REGULAR.drawCentered(name, PLAYER_X, headY - PLAYER_SIZE * 0.42f - 10, Render.alpha(0xFFFFFFFF, appear));
+    }
+
+    private static boolean onPlayer(float lx, float ly) {
+        return Ui.isInside(lx, ly, PLAYER_X - PLAYER_SIZE * 0.45f, BLOCK_H - PLAYER_SIZE * 2.05f, PLAYER_SIZE * 0.9f, PLAYER_SIZE * 2.05f);
     }
 
     private void drawCorners(int mouseX, int mouseY, float appear) {
@@ -199,6 +231,11 @@ public class NovaMainMenu extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         if (button != 0) return;
+        if (onPlayer(localX(mouseX), localY(mouseY))) {
+            draggingPlayer = true;
+            lastDragX = mouseX;
+            return;
+        }
         for (int i = 0; i < BUTTONS.length; i++) {
             if (!Ui.isInside(localX(mouseX), localY(mouseY), -BUTTON_W / 2f, buttonY(i), BUTTON_W, BUTTON_H)) continue;
             switch (i) {
@@ -222,6 +259,18 @@ public class NovaMainMenu extends GuiScreen {
             }
             x -= 14;
         }
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int button, long timeSinceLastClick) {
+        if (!draggingPlayer) return;
+        spin.snap(spin.get() + (mouseX - lastDragX) * 3f);
+        lastDragX = mouseX;
+    }
+
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        draggingPlayer = false;
     }
 
     @Override
