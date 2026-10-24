@@ -11,6 +11,7 @@ import com.nova.module.impl.Keystrokes;
 import com.nova.module.impl.PingDisplay;
 import com.nova.module.impl.PotionEffects;
 import com.nova.module.impl.ToggleSprint;
+import com.nova.module.impl.Zoom;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public final class ModuleManager {
     /** Mods that start turned on (the first time they're seen). */
     private static final List<Class<? extends Module>> ON_BY_DEFAULT = Arrays.asList(
             PingDisplay.class, CpsDisplay.class, FpsDisplay.class, Clock.class,
-            Keystrokes.class, PotionEffects.class, ArmorStatus.class);
+            Keystrokes.class, PotionEffects.class, ArmorStatus.class, Zoom.class);
 
     private final List<Module> modules = new ArrayList<>();
 
@@ -39,6 +40,7 @@ public final class ModuleManager {
         register(new PotionEffects());
         register(new ArmorStatus());
         register(new ToggleSprint());
+        register(new Zoom());
         register(new ActiveMods());
     }
 
