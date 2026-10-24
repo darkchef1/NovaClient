@@ -224,12 +224,12 @@ public class ClickGuiScreen extends GuiScreen {
         float tabX = tabsX();
         for (Tab t : Tab.values()) {
             String label = t.name();
-            float hover = hovers.get("tab" + label, Ui.isInside(mouseX, mouseY, tabX, py + 10, TAB_W, 18));
+            float hover = hovers.get("tab" + label, Ui.isInside(mouseX, mouseY, tabX, py + 10, tabW(), 18));
             float active = states.state("tab" + label, tab == t);
             int bg = Render.mix(Render.mix(Ui.SURFACE, Ui.SURFACE_HOVER, hover), Render.alpha(accent, 0.55f), active);
-            Render.roundedRect(tabX, py + 10, TAB_W, 18, 4, bg);
-            Fonts.MEDIUM.drawCentered(label, tabX + TAB_W / 2f, Fonts.MEDIUM.centerY(py + 10, 18), Render.mix(Ui.TEXT_DIM, Ui.TEXT, Math.max(hover, active)));
-            tabX += TAB_W + 6;
+            Render.roundedRect(tabX, py + 10, tabW(), 18, 4, bg);
+            Fonts.MEDIUM.drawCentered(label, tabX + tabW() / 2f, Fonts.MEDIUM.centerY(py + 10, 18), Render.mix(Ui.TEXT_DIM, Ui.TEXT, Math.max(hover, active)));
+            tabX += tabW() + 6;
         }
 
         float closeX = px + pw - 28;
@@ -240,9 +240,24 @@ public class ClickGuiScreen extends GuiScreen {
         Render.rect(px + 12, py + HEADER_H + 2, pw - 24, 1, 0x20FFFFFF);
     }
 
+    /** Room for the tabs: after the logo, before the close button. */
+    private float tabsLeft() {
+        return px + 14 + Fonts.LARGE.getWidth("NOVA CLIENT") + 12;
+    }
+
+    private float tabsRight() {
+        return px + pw - 36;
+    }
+
+    /** Tabs shrink to fit small windows, up to TAB_W wide. */
+    private float tabW() {
+        int n = Tab.values().length;
+        return Math.min(TAB_W, (tabsRight() - tabsLeft() - (n - 1) * 6) / n);
+    }
+
     private float tabsX() {
-        float total = Tab.values().length * (TAB_W + 6) - 6;
-        return px + pw / 2f - total / 2f + 30;
+        float total = Tab.values().length * (tabW() + 6) - 6;
+        return (tabsLeft() + tabsRight()) / 2f - total / 2f;
     }
 
     // ---- profiles sidebar
@@ -304,7 +319,7 @@ public class ClickGuiScreen extends GuiScreen {
             drawWaypointBar(mouseX, mouseY, y);
         } else if (tab == Tab.COSMETICS) {
             cosmetics.drawToolbar(mainX(), y, mouseX, mouseY);
-            cosmetics.drawFolderButton(mainX() + mainW(), y, mouseX, mouseY);
+            cosmetics.drawFolderButton(mainX(), mainX() + mainW(), y, mouseX, mouseY);
         } else if (page != null) {
             drawPageBar(mouseX, mouseY, y);
         } else {
@@ -621,7 +636,7 @@ public class ClickGuiScreen extends GuiScreen {
     private boolean clickHeader(int mouseX, int mouseY) {
         float tabX = tabsX();
         for (Tab t : Tab.values()) {
-            if (Ui.isInside(mouseX, mouseY, tabX, py + 10, TAB_W, 18)) {
+            if (Ui.isInside(mouseX, mouseY, tabX, py + 10, tabW(), 18)) {
                 if (tab != t) {
                     tab = t;
                     reveal();
@@ -629,7 +644,7 @@ public class ClickGuiScreen extends GuiScreen {
                 }
                 return true;
             }
-            tabX += TAB_W + 6;
+            tabX += tabW() + 6;
         }
         if (Ui.isInside(mouseX, mouseY, px + pw - 28, py + 10, 18, 18)) {
             close();

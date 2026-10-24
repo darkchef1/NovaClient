@@ -229,6 +229,8 @@ public final class CosmeticRenderer {
         GlStateManager.rotate(pose.headYaw, 0f, 1f, 0f);
         float bob = (float) Math.sin(pose.ticks * 0.1f) * 0.025f;
         GlStateManager.translate(0f, -0.66f - bob, 0f);
+        // tip the front down a little: a perfectly flat ring is just a line when seen at eye level
+        GlStateManager.rotate(18f, 1f, 0f, 0f);
         additive(true);
         ring(0.15f, 0.36f, argb(0xFFE9A0, 0f), argb(0xFFD866, 0.35f), argb(0xFFE9A0, 0f));   // soft glow
         ring(0.2f, 0.27f, argb(0xFFF6D0, 0.95f), argb(0xFFFFFF, 1f), argb(0xFFF6D0, 0.95f)); // the ring itself

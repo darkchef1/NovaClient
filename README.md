@@ -9,6 +9,28 @@ A Lunar-style PvP client for Minecraft **1.8.9** (Forge), built for Hypixel and 
 3. In the Minecraft Launcher, start the **forge 1.8.9** profile (`1.8.9-forge1.8.9-11.15.1.2318`).
 4. In game, press **Right Shift** to open the menu.
 
+## Cosmetics
+
+Open the menu (Right Shift) → **COSMETICS**. A 3D preview shows you wearing them (drag to spin);
+click a card to put it on, click it again to take it off. One per slot:
+
+| Slot | Cosmetics |
+|---|---|
+| Capes | Nova, Galaxy\*, Aurora\*, Rainbow\*, Sunset, Frost, Crimson, Midnight, plus your own |
+| Wings | Angel, Dragon, Nova Crystal (flap faster when you sprint or jump) |
+| Head | Halo, Crown |
+| Aura | Star Aura, Rainbow Aura (stars orbiting you) |
+
+\* animated
+
+**Your own capes:** click **MY CAPES FOLDER** and drop PNG images in it
+(`config/novaclient/capes`). They show up as capes only you can see.
+
+**Who sees them:** cosmetics are drawn by Nova, so only players using Nova can see them (the same
+as Lunar's cosmetics). Your own cosmetics always show for you. To let friends using Nova see each
+other's cosmetics, add their Minecraft names to [`cosmetics.json`](cosmetics.json) in this repository.
+Nova reads it every 5 minutes, and players on it also get a small Nova star next to their name tag.
+
 ## Main menu
 
 Nova replaces the title screen with its own: an animated night sky that follows your mouse, the Nova logo,

@@ -39,13 +39,23 @@ public final class Render {
         }
         begin(color);
         WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        // Go around counter-clockwise on screen, like Minecraft's own rectangles. Going the other way
+        // makes the shape "face away", and it disappears whenever back faces are being skipped.
         wr.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
-        corner(wr, x + w - radius, y + radius, radius, 270);
-        corner(wr, x + w - radius, y + h - radius, radius, 0);
-        corner(wr, x + radius, y + h - radius, radius, 90);
-        corner(wr, x + radius, y + radius, radius, 180);
+        cornerReversed(wr, x + radius, y + radius, radius, 180);
+        cornerReversed(wr, x + radius, y + h - radius, radius, 90);
+        cornerReversed(wr, x + w - radius, y + h - radius, radius, 0);
+        cornerReversed(wr, x + w - radius, y + radius, radius, 270);
         Tessellator.getInstance().draw();
         end();
+    }
+
+    /** One rounded corner, walked from startDeg + 90 back down to startDeg. */
+    private static void cornerReversed(WorldRenderer wr, float cx, float cy, float r, int startDeg) {
+        for (int deg = startDeg + 90; deg >= startDeg; deg -= 10) {
+            double rad = Math.toRadians(deg);
+            wr.pos(cx + Math.cos(rad) * r, cy + Math.sin(rad) * r, 0).endVertex();
+        }
     }
 
     /** A thin border with rounded corners, matching {@link #roundedRect}. Width is in GUI pixels. */

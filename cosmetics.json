@@ -1,0 +1,5 @@
+{
+  "_help": "Nova players listed here show their cosmetics to everyone using Nova, and get the Nova star next to their name. Use their Minecraft name. Slots: cape (nova, galaxy, aurora, rainbow, sunset, ice, crimson, midnight), wings (angel, dragon, crystal), head (halo, crown), aura (stars, rainbow_stars). Example: \"SomePlayer\": {\"cape\": \"galaxy\", \"wings\": \"angel\"}",
+  "players": {
+  }
+}

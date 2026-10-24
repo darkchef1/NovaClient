@@ -63,16 +63,34 @@ final class CosmeticsPage {
         }
     }
 
-    void drawFolderButton(float right, float y, int mouseX, int mouseY) {
+    /** Where the slot chips end, so the folder button never covers them. */
+    private static float chipsEnd(float x) {
+        for (CosmeticSlot s : CosmeticSlot.values()) x += Fonts.MEDIUM.getWidth(s.displayName.toUpperCase()) + 16 + 4;
+        return x;
+    }
+
+    /** The folder button's label and width: shorter on narrow windows. */
+    private static String folderLabel(float x, float right) {
+        return right - chipsEnd(x) - 6 >= FOLDER_W ? "MY CAPES FOLDER" : "FOLDER";
+    }
+
+    private static float folderWidth(String label) {
+        return label.length() > 6 ? FOLDER_W : Fonts.MEDIUM.getWidth(label) + 16;
+    }
+
+    void drawFolderButton(float x, float right, float y, int mouseX, int mouseY) {
         if (slot != CosmeticSlot.CAPE) return;
-        float fx = right - FOLDER_W;
-        float hover = hovers.get("folder", Ui.isInside(mouseX, mouseY, fx, y, FOLDER_W, TOOLBAR_H));
-        Render.roundedRect(fx, y, FOLDER_W, TOOLBAR_H, 4, Render.mix(Ui.SURFACE, Ui.SURFACE_HOVER, hover));
-        Fonts.MEDIUM.drawCentered("MY CAPES FOLDER", fx + FOLDER_W / 2f, Fonts.MEDIUM.centerY(y, TOOLBAR_H), Ui.TEXT);
+        String label = folderLabel(x, right);
+        float fw = folderWidth(label);
+        float fx = right - fw;
+        float hover = hovers.get("folder", Ui.isInside(mouseX, mouseY, fx, y, fw, TOOLBAR_H));
+        Render.roundedRect(fx, y, fw, TOOLBAR_H, 4, Render.mix(Ui.SURFACE, Ui.SURFACE_HOVER, hover));
+        Fonts.MEDIUM.drawCentered(label, fx + fw / 2f, Fonts.MEDIUM.centerY(y, TOOLBAR_H), Ui.TEXT);
     }
 
     /** @return true if the click hit the toolbar. */
     boolean clickToolbar(float x, float y, float right, int mouseX, int mouseY) {
+        float folderW = folderWidth(folderLabel(x, right));
         for (CosmeticSlot s : CosmeticSlot.values()) {
             float cw = Fonts.MEDIUM.getWidth(s.displayName.toUpperCase()) + 16;
             if (Ui.isInside(mouseX, mouseY, x, y, cw, TOOLBAR_H)) {
@@ -85,7 +103,7 @@ final class CosmeticsPage {
             }
             x += cw + 4;
         }
-        if (slot == CosmeticSlot.CAPE && Ui.isInside(mouseX, mouseY, right - FOLDER_W, y, FOLDER_W, TOOLBAR_H)) {
+        if (slot == CosmeticSlot.CAPE && Ui.isInside(mouseX, mouseY, right - folderW, y, folderW, TOOLBAR_H)) {
             openCapesFolder();
             return true;
         }
