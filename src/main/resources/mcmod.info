@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "${modid}",
+    "name": "Nova Client",
+    "description": "A Lunar-style PvP client for 1.8.9. Press Right Shift to open the menu.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["You"],
+    "credits": "Built on nea89o's Forge 1.8.9 template",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
