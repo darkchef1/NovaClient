@@ -46,6 +46,29 @@ Everything is saved to `.minecraft/config/novaclient.json`.
 - **Toggle Sprint**: always sprint; set a toggle key in its settings
 - **Active Mods**: a list of every mod you have on, sliding in and out as you toggle them
 
+**PvP pack**
+- **Item Counter**: healing pots, soups, pearls, golden apples and arrows left
+- **Pearl Cooldown**: countdown circle after you throw a pearl (cooldown length is a setting; Minemen = 16s)
+- **Combo Counter** and **Reach Display** (display only)
+- **Hit Color**: the color players flash when hit
+- **Custom Crosshair**: cross, dot, circle or T; size, gap, thickness, color, red when aiming at a player
+- **No Hurt Shake**
+
+**Visual / mechanic**
+- **Zoom** (hold C, scroll to zoom more) and **Freelook** (hold Left Alt; does nothing on Hypixel)
+- **1.7 Animations**: blockhit swing, swing while eating/bow, red armor when hit
+- **Item Physics**, **Block Outline**, **Fullbright**, **Time Changer**, **Motion Blur**
+
+**Chat**
+- **AutoGG**, **Compact Chat** (repeated messages stack as "(x5)"), **Chat Timestamps**
+
+**Profiles** (left side of the menu): click to switch, **+ NEW PROFILE** copies your current setup,
+right-click to rename, hover and click **x** to delete. Saved in `config/novaclient/profiles/`.
+
+**Waypoints** (WAYPOINTS tab): **+ ADD WAYPOINT HERE** marks where you stand. Click a name to rename,
+the dot to change color, ON/OFF to hide, **x** to delete. Saved per server in `config/novaclient/waypoints.json`.
+Hidden on Hypixel.
+
 ## Adding your own mod
 
 ### 1. A simple text mod (easiest)

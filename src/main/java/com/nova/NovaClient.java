@@ -2,8 +2,11 @@ package com.nova;
 
 import com.nova.config.Config;
 import com.nova.event.ClientEvents;
+import com.nova.module.Module;
 import com.nova.module.ModuleManager;
+import com.nova.util.CombatTracker;
 import com.nova.util.CpsTracker;
+import com.nova.waypoint.WaypointManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,16 +33,28 @@ public class NovaClient {
     public void init(FMLInitializationEvent event) {
         moduleManager = new ModuleManager();
         settings = new ClientSettings();
-        config = new Config(new File(Minecraft.getMinecraft().mcDataDir, "config/novaclient.json"));
+        config = new Config(Minecraft.getMinecraft().mcDataDir);
         moduleManager.enableDefaults(config.load(moduleManager, settings));
+        WaypointManager.load(new File(config.getDirectory(), "waypoints.json"));
 
         ClientRegistry.registerKeyBinding(MENU_KEY);
         MinecraftForge.EVENT_BUS.register(new CpsTracker());
+        MinecraftForge.EVENT_BUS.register(new CombatTracker());
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
     }
 
     public static ModuleManager getModuleManager() {
         return moduleManager;
+    }
+
+    /** True if this mod exists and is on. Safe to call from mixins before the client has started. */
+    public static boolean isEnabled(Class<? extends Module> type) {
+        return moduleManager != null && moduleManager.get(type).isEnabled();
+    }
+
+    /** The mod instance, for mixins that need its settings. Only call after checking {@link #isEnabled}. */
+    public static <T extends Module> T get(Class<T> type) {
+        return moduleManager.get(type);
     }
 
     public static ClientSettings getSettings() {
@@ -49,6 +64,10 @@ public class NovaClient {
     /** The accent color picked in the SETTINGS tab. */
     public static int accent() {
         return settings.getAccent();
+    }
+
+    public static Config getConfig() {
+        return config;
     }
 
     public static void saveConfig() {
