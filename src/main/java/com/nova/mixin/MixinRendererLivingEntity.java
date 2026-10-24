@@ -2,10 +2,15 @@ package com.nova.mixin;
 
 import com.nova.NovaClient;
 import com.nova.module.impl.HitColor;
+import com.nova.module.impl.OwnNametag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.EntityLivingBase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.nio.FloatBuffer;
 
@@ -35,6 +40,15 @@ public abstract class MixinRendererLivingEntity {
     @Redirect(method = "setBrightness", at = @At(value = "INVOKE", target = PUT, ordinal = 3))
     private FloatBuffer nova$hitAlpha(FloatBuffer buffer, float value) {
         return buffer.put(hitColor(3, value));
+    }
+
+    /** Own Nametag: Minecraft never draws your own name; in third person, allow it. */
+    @Inject(method = "canRenderName(Lnet/minecraft/entity/EntityLivingBase;)Z", at = @At("HEAD"), cancellable = true)
+    private void nova$ownNametag(EntityLivingBase entity, CallbackInfoReturnable<Boolean> cir) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (entity == mc.thePlayer && mc.gameSettings.thirdPersonView != 0 && NovaClient.isEnabled(OwnNametag.class)) {
+            cir.setReturnValue(Minecraft.isGuiEnabled() && !entity.isInvisible());
+        }
     }
 
     private static float hitColor(int channel, float vanilla) {

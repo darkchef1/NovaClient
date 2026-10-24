@@ -77,6 +77,10 @@ Everything is saved to `.minecraft/config/novaclient.json`.
 - **Potion Effects**: icon, name, level and time left; blinks when about to run out
 - **Toggle Sprint**: always sprint; set a toggle key in its settings
 - **Active Mods**: a list of every mod you have on, sliding in and out as you toggle them
+- **Server Address**, **Memory Usage**, **Speed** (blocks per second), **Stopwatch**
+- **Direction**: a compass strip with the way you face in the middle
+- **Scoreboard**: the server's sidebar, movable, with the red numbers hidden by default
+- **Boss Bar**: the boss health bar, movable
 
 **PvP pack**
 - **Item Counter**: healing pots, soups, pearls, golden apples and arrows left
@@ -85,11 +89,17 @@ Everything is saved to `.minecraft/config/novaclient.json`.
 - **Hit Color**: the color players flash when hit
 - **Custom Crosshair**: cross, dot, circle or T; size, gap, thickness, color, red when aiming at a player
 - **No Hurt Shake**
+- **Toggle Sneak** (tap sneak to keep sneaking) and **Particles** (crit and sharpness particles on every hit, up to 5x)
 
 **Visual / mechanic**
 - **Zoom** (hold C, scroll to zoom more) and **Freelook** (hold Left Alt; does nothing on Hypixel)
 - **1.7 Animations**: blockhit swing, swing while eating/bow, red armor when hit
 - **Item Physics**, **Block Outline**, **Fullbright**, **Time Changer**, **Motion Blur**
+- **Own Nametag** (see your name in F5) and **Hitboxes** (like F3 + B)
+
+**Client settings** (SETTINGS tab): accent color, menu blur, HUD in F3 / behind menus, HUD editor
+snapping, Nova main menu, max main menu FPS, **limit FPS when the game is in the background**,
+and **keep the inventory centered** when you have potion effects.
 
 **Chat**
 - **AutoGG**, **Compact Chat** (repeated messages stack as "(x5)"), **Chat Timestamps**

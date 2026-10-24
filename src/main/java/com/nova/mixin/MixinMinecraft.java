@@ -4,6 +4,7 @@ import com.nova.NovaClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import org.lwjgl.opengl.Display;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +22,12 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "getLimitFramerate", at = @At("HEAD"), cancellable = true)
     private void nova$menuFps(CallbackInfoReturnable<Integer> cir) {
-        if (theWorld == null && currentScreen != null && NovaClient.getSettings() != null) {
+        if (NovaClient.getSettings() == null) return;
+        if (theWorld == null && currentScreen != null) {
             cir.setReturnValue(NovaClient.getSettings().menuFps.getInt());
+        } else if (theWorld != null && !Display.isActive() && NovaClient.getSettings().limitBackgroundFps.isOn()) {
+            // the game window isn't focused (you alt-tabbed): no need to draw at full speed
+            cir.setReturnValue(NovaClient.getSettings().backgroundFps.getInt());
         }
     }
 }

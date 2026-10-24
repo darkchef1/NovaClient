@@ -16,6 +16,9 @@ public final class ClientSettings extends Module {
     public final BooleanSetting snapping = add(new BooleanSetting("HUD editor snapping", true));
     public final BooleanSetting customMainMenu = add(new BooleanSetting("Nova main menu", true));
     public final NumberSetting menuFps = add(new NumberSetting("Max main menu FPS", 120, 30, 240, 10));
+    public final BooleanSetting limitBackgroundFps = add(new BooleanSetting("Limit FPS in background", true));
+    public final NumberSetting backgroundFps = add(new NumberSetting("Background FPS", 30, 5, 120, 5));
+    public final BooleanSetting centeredInventory = add(new BooleanSetting("Keep inventory centered", true));
 
     public ClientSettings() {
         super("Client", "Client-wide options", Category.MISC);

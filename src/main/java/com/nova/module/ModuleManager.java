@@ -30,6 +30,17 @@ import com.nova.module.impl.TimeChanger;
 import com.nova.module.impl.ToggleSprint;
 import com.nova.module.impl.Waypoints;
 import com.nova.module.impl.Zoom;
+import com.nova.module.impl.BossBar;
+import com.nova.module.impl.DirectionHud;
+import com.nova.module.impl.Hitboxes;
+import com.nova.module.impl.MemoryUsage;
+import com.nova.module.impl.OwnNametag;
+import com.nova.module.impl.Particles;
+import com.nova.module.impl.ScoreboardHud;
+import com.nova.module.impl.ServerAddress;
+import com.nova.module.impl.SpeedDisplay;
+import com.nova.module.impl.Stopwatch;
+import com.nova.module.impl.ToggleSneak;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
@@ -59,6 +70,13 @@ public final class ModuleManager {
         register(new Keystrokes());
         register(new PotionEffects());
         register(new ArmorStatus());
+        register(new ServerAddress());
+        register(new MemoryUsage());
+        register(new SpeedDisplay());
+        register(new DirectionHud());
+        register(new Stopwatch());
+        register(new ScoreboardHud());
+        register(new BossBar());
         register(new ActiveMods());
         // PvP
         register(new ItemCounter());
@@ -69,6 +87,8 @@ public final class ModuleManager {
         register(new CustomCrosshair());
         register(new NoHurtShake());
         register(new ToggleSprint());
+        register(new ToggleSneak());
+        register(new Particles());
         // Mechanic / visual
         register(new Zoom());
         register(new OldAnimations());
@@ -78,6 +98,8 @@ public final class ModuleManager {
         register(new TimeChanger());
         register(new MotionBlur());
         register(new Freelook());
+        register(new OwnNametag());
+        register(new Hitboxes());
         register(new Waypoints());
         // Chat
         register(new AutoGG());

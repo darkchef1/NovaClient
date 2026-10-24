@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class DayCounter extends TextHudModule {
     public DayCounter() {
         super("Day Counter", "Shows how many days the world has been running", Category.HUD, 2, 2);
-        setDefaultPosition(Anchor.CENTER, Anchor.START, 0, 22);
+        setDefaultPosition(Anchor.CENTER, Anchor.START, 0, 58);
     }
 
     @Override
