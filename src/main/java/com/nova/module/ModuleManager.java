@@ -32,6 +32,7 @@ import com.nova.module.impl.Waypoints;
 import com.nova.module.impl.Zoom;
 import com.nova.module.impl.BossBar;
 import com.nova.module.impl.DirectionHud;
+import com.nova.module.impl.Emotes;
 import com.nova.module.impl.Hitboxes;
 import com.nova.module.impl.MemoryUsage;
 import com.nova.module.impl.OwnNametag;
@@ -54,7 +55,7 @@ public final class ModuleManager {
     private static final List<Class<? extends Module>> ON_BY_DEFAULT = Arrays.asList(
             PingDisplay.class, CpsDisplay.class, FpsDisplay.class, Clock.class,
             Keystrokes.class, PotionEffects.class, ArmorStatus.class, Zoom.class,
-            ItemCounter.class, PearlCooldown.class, OldAnimations.class, Waypoints.class);
+            ItemCounter.class, PearlCooldown.class, OldAnimations.class, Waypoints.class, Emotes.class);
 
     private final List<Module> modules = new ArrayList<>();
 
@@ -101,6 +102,7 @@ public final class ModuleManager {
         register(new OwnNametag());
         register(new Hitboxes());
         register(new Waypoints());
+        register(new Emotes());
         // Chat
         register(new AutoGG());
         register(new CompactChat());
