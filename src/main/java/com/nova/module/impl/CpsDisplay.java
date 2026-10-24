@@ -11,7 +11,7 @@ public class CpsDisplay extends TextHudModule {
     private final ModeSetting show = add(new ModeSetting("Show", "Left + Right", "Left + Right", "Left only"));
 
     public CpsDisplay() {
-        super("CPS", "Shows your clicks per second", Category.HUD, 2, 20);
+        super("CPS", "Shows your clicks per second", Category.HUD, 2, 22);
     }
 
     @Override

@@ -17,7 +17,8 @@ import java.util.List;
 public final class SettingsList {
     public static final int ROW_H = 22;
     public static final int GAP = 4;
-    private static final int SWITCH_W = 24;
+    private static final int SWITCH_W = 36;
+    private static final int SWITCH_H = 12;
     private static final int MODE_W = 96;
     private static final int TRACK_W = 100;
     private static final int KEY_W = 74;
@@ -60,11 +61,16 @@ public final class SettingsList {
         float right = x + w - 10;
 
         if (setting instanceof BooleanSetting) {
+            // Lunar-style pill: red "OFF" / green "ON", with a knob sliding to the other side
             float on = switches.state(setting, ((BooleanSetting) setting).isOn());
             float sx = right - SWITCH_W;
-            float sy = ry + (ROW_H - 12) / 2f;
-            Render.roundedRect(sx, sy, SWITCH_W, 12, 6, Render.mix(Ui.TRACK, accent, on));
-            Render.circle(sx + 6 + on * (SWITCH_W - 12), sy + 6, 4.5f, Ui.TEXT);
+            float sy = ry + (ROW_H - SWITCH_H) / 2f;
+            Render.roundedRect(sx, sy, SWITCH_W, SWITCH_H, 2, Render.mix(Ui.OFF, Ui.ON, on));
+            float knobW = SWITCH_W / 2f - 1;
+            Render.roundedRect(sx + 1 + on * (SWITCH_W / 2f), sy + 1, knobW, SWITCH_H - 2, 1.5f, 0xFF4A4A55);
+            float labelY = Fonts.SMALL.centerY(sy, SWITCH_H);
+            Fonts.SMALL.drawCentered("ON", sx + SWITCH_W / 4f, labelY, Render.alpha(Ui.TEXT, on));
+            Fonts.SMALL.drawCentered("OFF", sx + SWITCH_W * 3f / 4f, labelY, Render.alpha(Ui.TEXT, 1f - on));
         } else if (setting instanceof ModeSetting) {
             float mx = right - MODE_W;
             Render.roundedRect(mx, ry + 4, MODE_W, ROW_H - 8, 3, Ui.SURFACE_DARK);

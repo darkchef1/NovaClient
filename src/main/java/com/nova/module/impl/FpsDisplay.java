@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 
 public class FpsDisplay extends TextHudModule {
     public FpsDisplay() {
-        super("FPS", "Shows your frames per second", Category.HUD, 2, 2);
+        super("FPS", "Shows your frames per second", Category.HUD, 62, 22);
     }
 
     @Override

@@ -31,9 +31,7 @@ public class NovaClient {
         moduleManager = new ModuleManager();
         settings = new ClientSettings();
         config = new Config(new File(Minecraft.getMinecraft().mcDataDir, "config/novaclient.json"));
-        if (!config.load(moduleManager, settings)) {
-            moduleManager.enableDefaults();
-        }
+        moduleManager.enableDefaults(config.load(moduleManager, settings));
 
         ClientRegistry.registerKeyBinding(MENU_KEY);
         MinecraftForge.EVENT_BUS.register(new CpsTracker());

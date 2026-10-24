@@ -33,7 +33,7 @@ public class ActiveMods extends HudModule {
 
     public ActiveMods() {
         super("Active Mods", "Shows a list of the mods you have on", Category.HUD, 0, 0);
-        setDefaultPosition(Anchor.END, Anchor.START, 0, 2);
+        setDefaultPosition(Anchor.END, Anchor.START, 0, 16);
     }
 
     @Override

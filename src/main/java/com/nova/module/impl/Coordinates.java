@@ -16,10 +16,11 @@ import java.util.List;
 /** X, Y and Z on separate lines, plus optional facing direction and biome. */
 public class Coordinates extends TextHudModule {
     private final BooleanSetting showDirection = add(new BooleanSetting("Show direction", true));
-    private final BooleanSetting showBiome = add(new BooleanSetting("Show biome", false));
+    private final BooleanSetting showBiome = add(new BooleanSetting("Show biome", true));
 
     public Coordinates() {
-        super("Coordinates", "Shows your X Y Z position", Category.HUD, 2, 56);
+        super("Coordinates", "Shows your X Y Z position", Category.HUD, 2, 2);
+        setDefaultPosition(Anchor.START, Anchor.END, 2, 2);
     }
 
     @Override
@@ -36,14 +37,14 @@ public class Coordinates extends TextHudModule {
         if (showDirection.isOn()) lines.add("F: " + direction(mc.thePlayer.getHorizontalFacing()));
         if (showBiome.isOn()) {
             BlockPos pos = new BlockPos(mc.thePlayer);
-            lines.add("Biome: " + mc.theWorld.getBiomeGenForCoords(pos).biomeName);
+            lines.add("Biome: " + value(GREEN, mc.theWorld.getBiomeGenForCoords(pos).biomeName));
         }
         return lines;
     }
 
     @Override
     protected List<String> getPreviewLines() {
-        return Arrays.asList("X: 0", "Y: 64", "Z: 0", "F: North (-Z)");
+        return Arrays.asList("X: 0", "Y: 64", "Z: 0", "F: North (-Z)", "Biome: " + value(GREEN, "Plains"));
     }
 
     private static String direction(EnumFacing facing) {

@@ -2,30 +2,43 @@ package com.nova.module;
 
 import com.nova.module.impl.ActiveMods;
 import com.nova.module.impl.ArmorStatus;
+import com.nova.module.impl.Clock;
 import com.nova.module.impl.Coordinates;
 import com.nova.module.impl.CpsDisplay;
+import com.nova.module.impl.DayCounter;
 import com.nova.module.impl.FpsDisplay;
 import com.nova.module.impl.Keystrokes;
 import com.nova.module.impl.PingDisplay;
+import com.nova.module.impl.PotionEffects;
 import com.nova.module.impl.ToggleSprint;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public final class ModuleManager {
+    /** Mods that start turned on (the first time they're seen). */
+    private static final List<Class<? extends Module>> ON_BY_DEFAULT = Arrays.asList(
+            PingDisplay.class, CpsDisplay.class, FpsDisplay.class, Clock.class,
+            Keystrokes.class, PotionEffects.class, ArmorStatus.class);
+
     private final List<Module> modules = new ArrayList<>();
 
     public ModuleManager() {
         // ===== Add new mods here: one line each =====
-        register(new FpsDisplay());
-        register(new CpsDisplay());
         register(new PingDisplay());
+        register(new CpsDisplay());
+        register(new FpsDisplay());
+        register(new Clock());
+        register(new DayCounter());
         register(new Coordinates());
-        register(new ToggleSprint());
         register(new Keystrokes());
+        register(new PotionEffects());
         register(new ArmorStatus());
+        register(new ToggleSprint());
         register(new ActiveMods());
     }
 
@@ -34,13 +47,11 @@ public final class ModuleManager {
         MinecraftForge.EVENT_BUS.register(module);
     }
 
-    /** Mods that are turned on the very first time the client starts. */
-    public void enableDefaults() {
-        get(FpsDisplay.class).setEnabled(true);
-        get(CpsDisplay.class).setEnabled(true);
-        get(Keystrokes.class).setEnabled(true);
-        get(ArmorStatus.class).setEnabled(true);
-        get(ActiveMods.class).setEnabled(true);
+    /** Turns on the default mods among these (new mods, or all of them on first launch). */
+    public void enableDefaults(Collection<Module> newModules) {
+        for (Module module : newModules) {
+            if (ON_BY_DEFAULT.contains(module.getClass())) module.setEnabled(true);
+        }
     }
 
     public List<Module> getModules() {

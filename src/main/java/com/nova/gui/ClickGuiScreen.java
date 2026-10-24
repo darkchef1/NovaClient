@@ -25,7 +25,7 @@ import java.util.List;
  * The Right Shift menu, laid out like Lunar's: tabs on top, filter chips and search,
  * a grid of mod cards, and a settings page per mod.
  * <p>
- * Everything animates: the panel scales and fades in and out, cards cascade in one
+ * Everything animates: the panel scales and fades in, cards cascade in one
  * after another, hover lifts cards, and colors fade instead of switching instantly.
  */
 public class ClickGuiScreen extends GuiScreen {
@@ -41,14 +41,13 @@ public class ClickGuiScreen extends GuiScreen {
     private final Ui.Hovers hovers = new Ui.Hovers();
     private final Ui.Hovers states = new Ui.Hovers();
     private final SettingsList settingsList = new SettingsList();
-    private final Anim open = new Anim(10f, 0f);
+    private final Anim open = new Anim(16f, 0f);
     private final Anim scroll = new Anim(14f, 0f);
 
     private Tab tab = Tab.MODS;
     private String filter = "ALL";
     private String search = "";
     private boolean searchFocused;
-    private boolean closing;
     private long revealStart = System.currentTimeMillis();
     private Module page;
     private List<Setting> pageSettings;
@@ -69,7 +68,7 @@ public class ClickGuiScreen extends GuiScreen {
 
     @Override
     public void initGui() {
-        if (!closing) open.setTarget(1f);
+        open.setTarget(1f);
         Keyboard.enableRepeatEvents(true);
         if (NovaClient.getSettings().menuBlur.isOn()) Blur.start();
     }
@@ -86,10 +85,9 @@ public class ClickGuiScreen extends GuiScreen {
         return false;
     }
 
-    /** Plays the closing animation, then closes the menu. */
+    /** Closes right away, like Lunar. (A closing animation made the menu feel stuck for a moment.) */
     private void close() {
-        closing = true;
-        open.setTarget(0f);
+        mc.displayGuiScreen(null);
     }
 
     /** Restarts the cascade so the content slides in again (after changing tab, filter or page). */
@@ -128,10 +126,6 @@ public class ClickGuiScreen extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         layout();
         float o = open.get();
-        if (closing && o < 0.03f) {
-            mc.displayGuiScreen(null);
-            return;
-        }
         float eased = Anim.easeOut(o);
         float scale = 0.92f + 0.08f * eased;
 
@@ -144,7 +138,6 @@ public class ClickGuiScreen extends GuiScreen {
         GlStateManager.translate(-width / 2f, -height / 2f, 0);
         int mx = (int) (width / 2f + (mouseX - width / 2f) / scale);
         int my = (int) (height / 2f + (mouseY - height / 2f) / scale);
-        if (closing) mx = my = -1;
 
         Render.roundedRect(px, py, pw, ph, 6, Ui.PANEL);
         drawHeader(mx, my);
@@ -386,7 +379,6 @@ public class ClickGuiScreen extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        if (closing) return;
         layout();
         mouseX = mapX(mouseX);
         mouseY = mapY(mouseY);
@@ -511,7 +503,6 @@ public class ClickGuiScreen extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (closing) return;
         if (settingsList.keyTyped(keyCode)) {
             NovaClient.saveConfig();
             return;

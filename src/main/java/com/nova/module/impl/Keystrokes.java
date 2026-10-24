@@ -20,25 +20,25 @@ import java.util.Map;
 
 /** WASD, mouse buttons and space bar. Keys fade smoothly when pressed and released. */
 public class Keystrokes extends HudModule {
-    private static final int KEY = 22;
+    private static final int KEY = 20;
     private static final int GAP = 2;
     private static final int WIDTH = KEY * 3 + GAP * 2;
     private static final int MOUSE_WIDTH = (WIDTH - GAP) / 2;
     private static final int SPACE_HEIGHT = 10;
-    private static final int IDLE_BG = 0x70000000;
+    private static final int IDLE_BG = 0x6F000000;
 
     private final BooleanSetting showMouse = add(new BooleanSetting("Show mouse buttons", true));
-    private final BooleanSetting showCps = add(new BooleanSetting("Show CPS", true));
+    private final BooleanSetting showCps = add(new BooleanSetting("Show CPS", false));
     private final BooleanSetting showSpace = add(new BooleanSetting("Show space bar", true));
     private final ModeSetting pressedColor = add(new ModeSetting("Pressed color", "White", "White", "Accent", "Chroma"));
     private final NumberSetting fadeSpeed = add(new NumberSetting("Fade speed", 12, 3, 30, 1));
-    private final BooleanSetting rounded = add(new BooleanSetting("Rounded corners", true));
-    private final BooleanSetting pop = add(new BooleanSetting("Press animation", true));
+    private final BooleanSetting rounded = add(new BooleanSetting("Rounded corners", false));
+    private final BooleanSetting pop = add(new BooleanSetting("Press animation", false));
 
     private final Map<KeyBinding, Anim> fades = new HashMap<>();
 
     public Keystrokes() {
-        super("Keystrokes", "Shows which keys and mouse buttons you press", Category.HUD, 2, 100);
+        super("Keystrokes", "Shows which keys and mouse buttons you press", Category.HUD, 2, 64);
     }
 
     @Override

@@ -9,15 +9,20 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The easiest kind of mod: a box with text (FPS, CPS, ping...).
+ * The easiest kind of mod: a Lunar-style box with text (FPS, CPS, ping...).
  * Implement {@link #getText()} for one line, or override {@link #getLines()} for several.
+ * Text can use color codes, e.g. {@code "Ping: " + GREEN + "59 ms"} via {@link #value}.
  * Background, brackets and color settings come for free.
  */
 public abstract class TextHudModule extends HudModule {
-    private static final int PADDING = 4;
-    private static final int HEIGHT = 16;
-    private static final int LINE_H = 10;
+    /** Color codes for values, like Lunar's green ping. */
+    protected static final String GREEN = "§a", YELLOW = "§e", GOLD = "§6", RED = "§c", RESET = "§r";
+
+    private static final int PADDING = 5;
+    private static final int HEIGHT = 18;
+    private static final int LINE_H = 11;
     private static final int MIN_WIDTH = 56;
+    private static final int BACKGROUND = 0x6F000000;
 
     protected final BooleanSetting background = add(new BooleanSetting("Background", true));
     protected final BooleanSetting brackets = add(new BooleanSetting("Brackets", false));
@@ -54,6 +59,11 @@ public abstract class TextHudModule extends HudModule {
         return lines == null || lines.isEmpty() ? null : lines;
     }
 
+    /** A value in a color, followed by a reset so later text goes back to the normal color. */
+    protected static String value(String colorCode, String text) {
+        return colorCode + text + RESET;
+    }
+
     private String decorate(String line) {
         return brackets.isOn() ? "[" + line + "]" : line;
     }
@@ -79,12 +89,12 @@ public abstract class TextHudModule extends HudModule {
         if (lines == null) return;
         int width = getWidth();
         if (background.isOn()) {
-            Gui.drawRect(0, 0, width, getHeight(), 0x6F000000);
+            Gui.drawRect(0, 0, width, getHeight(), BACKGROUND);
         }
         if (lines.size() == 1) {
             String text = decorate(lines.get(0));
             int textX = (width - mc.fontRendererObj.getStringWidth(text)) / 2;
-            mc.fontRendererObj.drawStringWithShadow(text, textX, (HEIGHT - 8) / 2f, getTextColor());
+            mc.fontRendererObj.drawStringWithShadow(text, textX, (HEIGHT - 7) / 2f, getTextColor());
             return;
         }
         for (int i = 0; i < lines.size(); i++) {

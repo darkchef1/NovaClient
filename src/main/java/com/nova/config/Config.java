@@ -21,12 +21,17 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Saves which mods are on, their keybinds, settings and HUD positions to config/novaclient.json. */
 public final class Config {
     private static final Logger LOGGER = LogManager.getLogger("NovaClient");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String CLIENT_KEY = "_client";
+    private static final String LAYOUT_KEY = "_layout";
+    /** Bump this when the default HUD look changes, to give existing setups the new look once. */
+    private static final int LAYOUT_VERSION = 2;
 
     private final File file;
 
@@ -34,28 +39,36 @@ public final class Config {
         this.file = file;
     }
 
-    /** @return false if there was no config yet (first launch). */
-    public boolean load(ModuleManager manager, ClientSettings clientSettings) {
-        if (!file.exists()) return false;
+    /**
+     * @return the mods that weren't in the config yet (all of them on first launch),
+     * so they can start in their default on/off state.
+     */
+    public List<Module> load(ModuleManager manager, ClientSettings clientSettings) {
+        List<Module> unseen = new ArrayList<>(manager.getModules());
+        if (!file.exists()) return unseen;
         try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
             JsonObject root = new JsonParser().parse(reader).getAsJsonObject();
+            // Configs from before the current HUD layout keep on/off and keybinds, but get the new HUD look.
+            boolean currentLayout = root.has(LAYOUT_KEY) && root.get(LAYOUT_KEY).getAsInt() >= LAYOUT_VERSION;
             for (Module module : manager.getModules()) {
-                loadModule(module, root.get(module.getName()));
+                JsonElement element = root.get(module.getName());
+                if (element != null) unseen.remove(module);
+                loadModule(module, element, currentLayout || !(module instanceof HudModule));
             }
-            loadModule(clientSettings, root.get(CLIENT_KEY));
-            return true;
+            loadModule(clientSettings, root.get(CLIENT_KEY), true);
         } catch (Exception e) {
             LOGGER.error("Could not load " + file, e);
-            return false;
         }
+        return unseen;
     }
 
-    private void loadModule(Module module, JsonElement element) {
+    private void loadModule(Module module, JsonElement element, boolean loadLook) {
         if (element == null || !element.isJsonObject()) return;
         JsonObject data = element.getAsJsonObject();
 
         if (data.has("enabled")) module.setEnabled(data.get("enabled").getAsBoolean());
         if (data.has("key")) module.setKey(data.get("key").getAsInt());
+        if (!loadLook) return;
         if (module instanceof HudModule) {
             HudModule hud = (HudModule) module;
             if (data.has("anchorX")) {
@@ -83,6 +96,7 @@ public final class Config {
             root.add(module.getName(), saveModule(module));
         }
         root.add(CLIENT_KEY, saveModule(clientSettings));
+        root.addProperty(LAYOUT_KEY, LAYOUT_VERSION);
 
         file.getParentFile().mkdirs();
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {

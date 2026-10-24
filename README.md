@@ -38,9 +38,11 @@ Everything is saved to `.minecraft/config/novaclient.json`.
 
 ### Included mods
 
-- **FPS**, **CPS**, **Ping**, **Coordinates**: text boxes with background/brackets/color (including Chroma)
-- **Keystrokes**: WASD, mouse buttons with CPS, space bar
-- **Armor Status**: armor and held item with durability
+- **FPS**, **CPS** (left | right), **Ping** (colored by ping), **Clock**, **Day Counter**: Lunar-style boxes with background/brackets/color (including Chroma)
+- **Coordinates**: X, Y, Z on separate lines, plus direction and biome
+- **Keystrokes**: WASD, mouse buttons (optional CPS), space bar; keys fade smoothly when pressed
+- **Armor Status**: armor and held item with durability; numbers sit beside the icons on the screen-edge side
+- **Potion Effects**: icon, name, level and time left; blinks when about to run out
 - **Toggle Sprint**: always sprint; set a toggle key in its settings
 - **Active Mods**: a list of every mod you have on, sliding in and out as you toggle them
 
