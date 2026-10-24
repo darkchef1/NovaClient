@@ -173,6 +173,25 @@ public final class Render {
         return wr.color((argb >> 16) & 255, (argb >> 8) & 255, argb & 255, (argb >>> 24) & 255);
     }
 
+    /** Draws part of a texture (u/v from 0 to 1) into a rectangle. */
+    public static void texture(net.minecraft.util.ResourceLocation location, float x, float y, float w, float h,
+                               float u1, float v1, float u2, float v2) {
+        mc.getTextureManager().bindTexture(location);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        wr.pos(x, y + h, 0).tex(u1, v2).endVertex();
+        wr.pos(x + w, y + h, 0).tex(u2, v2).endVertex();
+        wr.pos(x + w, y, 0).tex(u2, v1).endVertex();
+        wr.pos(x, y, 0).tex(u1, v1).endVertex();
+        Tessellator.getInstance().draw();
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
+    }
+
     public static void item(ItemStack stack, float x, float y, float scale) {
         if (stack == null) return;
         GlStateManager.pushMatrix();

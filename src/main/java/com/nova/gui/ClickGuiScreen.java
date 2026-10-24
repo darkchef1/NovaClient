@@ -33,7 +33,7 @@ import java.util.List;
  * after another, hover lifts cards, and colors fade instead of switching instantly.
  */
 public class ClickGuiScreen extends GuiScreen {
-    private enum Tab {MODS, SETTINGS, WAYPOINTS}
+    private enum Tab {MODS, SETTINGS, COSMETICS, WAYPOINTS}
 
     private static final String[] FILTERS = {"ALL", "ENABLED", "HUD", "PVP", "MECHANIC", "CHAT"};
     private static final int HEADER_H = 34;
@@ -49,6 +49,7 @@ public class ClickGuiScreen extends GuiScreen {
     private final Ui.Hovers hovers = new Ui.Hovers();
     private final Ui.Hovers states = new Ui.Hovers();
     private final SettingsList settingsList = new SettingsList();
+    private final CosmeticsPage cosmetics = new CosmeticsPage();
     private final Anim open = new Anim(16f, 0f);
     private final Anim scroll = new Anim(14f, 0f);
 
@@ -71,6 +72,14 @@ public class ClickGuiScreen extends GuiScreen {
     private float px, py, pw, ph;
 
     public ClickGuiScreen() {
+    }
+
+    /** Opens the menu on the COSMETICS tab. */
+    public static ClickGuiScreen cosmeticsTab() {
+        ClickGuiScreen screen = new ClickGuiScreen();
+        screen.tab = Tab.COSMETICS;
+        screen.cosmetics.onOpen();
+        return screen;
     }
 
     /** Opens the menu directly on a mod's settings page. */
@@ -188,6 +197,8 @@ public class ClickGuiScreen extends GuiScreen {
             maxScroll = Math.max(0, SettingsList.height(settings) - contentH());
         } else if (tab == Tab.WAYPOINTS) {
             drawWaypoints(mx, contentMouseY, offset);
+        } else if (tab == Tab.COSMETICS) {
+            maxScroll = cosmetics.draw(contentX(), contentY(), contentW(), contentH(), offset, mx, contentMouseY);
         } else if (page != null) {
             syncPage();
             settingsList.draw(pageSettings, contentX(), contentY() - offset, contentW(), mx, contentMouseY);
@@ -291,6 +302,9 @@ public class ClickGuiScreen extends GuiScreen {
             Fonts.LARGE.draw("Client Settings", mainX(), Fonts.LARGE.centerY(y, TOOLBAR_H), Ui.TEXT);
         } else if (tab == Tab.WAYPOINTS) {
             drawWaypointBar(mouseX, mouseY, y);
+        } else if (tab == Tab.COSMETICS) {
+            cosmetics.drawToolbar(mainX(), y, mouseX, mouseY);
+            cosmetics.drawFolderButton(mainX() + mainW(), y, mouseX, mouseY);
         } else if (page != null) {
             drawPageBar(mouseX, mouseY, y);
         } else {
@@ -573,6 +587,10 @@ public class ClickGuiScreen extends GuiScreen {
             clickWaypoints(mouseX, mouseY, offset);
             return;
         }
+        if (tab == Tab.COSMETICS) {
+            cosmetics.click(contentX(), contentY(), contentW(), contentH(), offset, mouseX, mouseY);
+            return;
+        }
         if (page != null) {
             if (settingsList.mouseClicked(pageSettings, contentX(), contentY() - offset, contentW(), mouseX, mouseY, button)) {
                 syncPage();
@@ -607,6 +625,7 @@ public class ClickGuiScreen extends GuiScreen {
                 if (tab != t) {
                     tab = t;
                     reveal();
+                    if (t == Tab.COSMETICS) cosmetics.onOpen();
                 }
                 return true;
             }
@@ -661,6 +680,10 @@ public class ClickGuiScreen extends GuiScreen {
         float y = toolbarY();
         if (!Ui.isInside(mouseX, mouseY, mainX(), y, mainW(), TOOLBAR_H)) return false;
 
+        if (tab == Tab.COSMETICS) {
+            if (cosmetics.clickToolbar(mainX(), y, mainX() + mainW(), mouseX, mouseY)) scroll.snap(0);
+            return true;
+        }
         if (tab == Tab.WAYPOINTS) {
             if (mc.thePlayer != null && Ui.isInside(mouseX, mouseY, mainX(), y, 140, TOOLBAR_H)) {
                 Waypoint added = WaypointManager.addHere();
@@ -742,10 +765,12 @@ public class ClickGuiScreen extends GuiScreen {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long timeSinceLastClick) {
         if (settingsList.mouseDragged(mapX(mouseX)) && page != null) syncPage();
+        cosmetics.drag(mapX(mouseX));
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
+        cosmetics.release();
         if (settingsList.isListening()) return;
         settingsList.mouseReleased();
         NovaClient.saveConfig();

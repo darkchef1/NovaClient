@@ -1,5 +1,8 @@
 package com.nova.gui;
 
+import com.nova.cosmetic.CosmeticRenderer;
+import com.nova.cosmetic.CosmeticSlot;
+import com.nova.cosmetic.Cosmetics;
 import com.nova.util.SkinLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -8,6 +11,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 
+import java.util.Map;
+
 /**
  * Draws your player model in 3D without needing a world: idle breathing, arms swaying,
  * and the head following the mouse. Used on the main menu.
@@ -15,6 +20,7 @@ import net.minecraft.client.renderer.RenderHelper;
 public final class PlayerPreview {
     private static final ModelPlayer WIDE = new ModelPlayer(0f, false);
     private static final ModelPlayer SLIM = new ModelPlayer(0f, true);
+    private static final CosmeticRenderer.Pose POSE = new CosmeticRenderer.Pose();
 
     private PlayerPreview() {
     }
@@ -28,6 +34,11 @@ public final class PlayerPreview {
      * @param lookY   same, vertically
      */
     public static void draw(float x, float y, float size, float yaw, float lookX, float lookY) {
+        draw(x, y, size, yaw, lookX, lookY, Cosmetics.getEquipped());
+    }
+
+    /** Same, wearing the given cosmetics (or none if null). */
+    public static void draw(float x, float y, float size, float yaw, float lookX, float lookY, Map<CosmeticSlot, String> cosmetics) {
         Minecraft mc = Minecraft.getMinecraft();
         ModelPlayer model = SkinLoader.isSlim() ? SLIM : WIDE;
         pose(model, lookX, lookY);
@@ -71,6 +82,17 @@ public final class PlayerPreview {
         model.bipedLeftArmwear.render(s);
         model.bipedRightLegwear.render(s);
         model.bipedLeftLegwear.render(s);
+
+        if (cosmetics != null && !cosmetics.isEmpty()) {
+            String cape = cosmetics.get(CosmeticSlot.CAPE);
+            if (cape != null) CosmeticRenderer.renderPreviewCape(model, cape);
+            POSE.ticks = (System.currentTimeMillis() % 1_000_000L) / 50f;
+            POSE.headYaw = (float) Math.toDegrees(model.bipedHead.rotateAngleY);
+            POSE.headPitch = (float) Math.toDegrees(model.bipedHead.rotateAngleX);
+            POSE.effort = 0.15f;
+            CosmeticRenderer.renderExtras(cosmetics, POSE);
+            GlStateManager.disableCull();
+        }
 
         GlStateManager.enableCull();
         GlStateManager.disableBlend();

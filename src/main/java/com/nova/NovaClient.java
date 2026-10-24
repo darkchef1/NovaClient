@@ -1,6 +1,8 @@
 package com.nova;
 
 import com.nova.config.Config;
+import com.nova.cosmetic.Cosmetics;
+import com.nova.cosmetic.NovaBadge;
 import com.nova.event.ClientEvents;
 import com.nova.module.Module;
 import com.nova.module.ModuleManager;
@@ -36,10 +38,12 @@ public class NovaClient {
         config = new Config(Minecraft.getMinecraft().mcDataDir);
         moduleManager.enableDefaults(config.load(moduleManager, settings));
         WaypointManager.load(new File(config.getDirectory(), "waypoints.json"));
+        Cosmetics.init(config.getDirectory());
 
         ClientRegistry.registerKeyBinding(MENU_KEY);
         MinecraftForge.EVENT_BUS.register(new CpsTracker());
         MinecraftForge.EVENT_BUS.register(new CombatTracker());
+        MinecraftForge.EVENT_BUS.register(new NovaBadge());
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
     }
 
