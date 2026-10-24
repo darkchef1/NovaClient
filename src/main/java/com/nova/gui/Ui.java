@@ -8,6 +8,8 @@ import java.util.Map;
 /** Shared colors and helpers for the menus. The accent color comes from NovaClient.accent(). */
 public final class Ui {
     public static final int PANEL = 0xE60F0F14;
+    /** The panel color without transparency, used to fade things in on top of the panel. */
+    public static final int PANEL_SOLID = 0xFF101015;
     public static final int SURFACE = 0xFF1A1A22;
     public static final int SURFACE_HOVER = 0xFF24242E;
     public static final int SURFACE_DARK = 0xFF14141A;

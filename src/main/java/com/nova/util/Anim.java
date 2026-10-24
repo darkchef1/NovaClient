@@ -5,7 +5,7 @@ package com.nova.util;
  * Call {@link #get()} every frame; set where it should go with {@link #setTarget(float)}.
  */
 public final class Anim {
-    private final float speed;
+    private float speed;
     private float value;
     private float target;
     private long lastUpdate = System.nanoTime();
@@ -30,8 +30,28 @@ public final class Anim {
         this.target = target;
     }
 
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
     public float getTarget() {
         return target;
+    }
+
+    /** Fast at first, gently slowing down at the end. t goes from 0 to 1. */
+    public static float easeOut(float t) {
+        t = Math.max(0f, Math.min(1f, t));
+        float inv = 1f - t;
+        return 1f - inv * inv * inv;
+    }
+
+    /**
+     * Progress (0 to 1, eased) of an item in a cascade: each item starts a little after the previous one.
+     * Used to make cards and rows slide in one after another.
+     */
+    public static float cascade(long startMillis, int index) {
+        long elapsed = System.currentTimeMillis() - startMillis - index * 25L;
+        return easeOut(elapsed / 240f);
     }
 
     /** Jump straight to a value with no animation. */
