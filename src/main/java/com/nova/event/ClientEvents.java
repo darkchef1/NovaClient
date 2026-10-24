@@ -3,6 +3,9 @@ package com.nova.event;
 import com.nova.NovaClient;
 import com.nova.gui.ClickGuiScreen;
 import com.nova.gui.HudEditorScreen;
+import com.nova.gui.NovaMainMenu;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import com.nova.module.HudModule;
 import com.nova.module.Module;
 import net.minecraft.client.Minecraft;
@@ -45,6 +48,14 @@ public final class ClientEvents {
             }
         }
         if (changed) NovaClient.saveConfig();
+    }
+
+    /** Shows Nova's title screen instead of the vanilla one. */
+    @SubscribeEvent
+    public void onGuiOpen(GuiOpenEvent event) {
+        if (event.gui instanceof GuiMainMenu && NovaClient.getSettings().customMainMenu.isOn()) {
+            event.gui = new NovaMainMenu();
+        }
     }
 
     @SubscribeEvent

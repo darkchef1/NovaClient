@@ -108,6 +108,17 @@ public final class NovaFont {
         return draw(text, centerX - getWidth(text) / 2f, y, color, false);
     }
 
+    /** Draws text centered, with extra space between letters (for titles like "N O V A"). */
+    public void drawSpaced(String text, float centerX, float y, float spacing, int color) {
+        float total = getWidth(text) + spacing * (text.length() - 1);
+        float x = centerX - total / 2f;
+        for (int i = 0; i < text.length(); i++) {
+            String c = String.valueOf(text.charAt(i));
+            draw(c, x, y, color, false);
+            x += getWidth(c) + spacing;
+        }
+    }
+
     public float draw(String text, float x, float y, int color, boolean shadow) {
         if (text == null || text.isEmpty()) return x;
         if (textureId == -1) setup();
@@ -117,6 +128,7 @@ public final class NovaFont {
         GlStateManager.translate(x, y, 0);
         GlStateManager.scale(SCALE, SCALE, 1f);
         GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.enableTexture2D();
         GlStateManager.bindTexture(textureId);
@@ -128,6 +140,7 @@ public final class NovaFont {
         }
         float width = pass(text, 0f, 0f, color, false);
 
+        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
         GlStateManager.color(1f, 1f, 1f, 1f);
         return x + width * SCALE;

@@ -68,6 +68,44 @@ public final class Render {
         end();
     }
 
+    /** A star with the given number of points, rotated by rotationDeg. Used for the Nova logo. */
+    public static void star(float cx, float cy, float outer, float inner, int points, float rotationDeg, int color) {
+        begin(color);
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION);
+        wr.pos(cx, cy, 0).endVertex();
+        for (int i = points * 2; i >= 0; i--) {
+            double rad = Math.toRadians(rotationDeg + i * 180.0 / points - 90);
+            float r = i % 2 == 0 ? outer : inner;
+            wr.pos(cx + Math.cos(rad) * r, cy + Math.sin(rad) * r, 0).endVertex();
+        }
+        Tessellator.getInstance().draw();
+        end();
+    }
+
+    /** A soft glow: a circle that fades smoothly from the color in the middle to nothing at the edge. */
+    public static void glow(float cx, float cy, float radius, int color, float strength) {
+        int center = alpha(color, Math.min(1f, strength * 0.4f));
+        int edge = color & 0x00FFFFFF;
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
+        color(wr.pos(cx, cy, 0), center).endVertex();
+        for (int deg = 360; deg >= 0; deg -= 6) {
+            double rad = Math.toRadians(deg);
+            color(wr.pos(cx + Math.cos(rad) * radius, cy + Math.sin(rad) * radius, 0), edge).endVertex();
+        }
+        Tessellator.getInstance().draw();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
+    }
+
     /** A ring from startDeg sweeping clockwise by sweepDeg (used for cooldown circles). */
     public static void arc(float cx, float cy, float r, float thickness, float startDeg, float sweepDeg, int color) {
         if (sweepDeg <= 0) return;
@@ -144,6 +182,8 @@ public final class Render {
 
     private static void begin(int color) {
         GlStateManager.enableBlend();
+        // Minecraft's GUIs throw away pixels under 10% opacity; turn that off so soft glows and faint fills show
+        GlStateManager.disableAlpha();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(((color >> 16) & 255) / 255f, ((color >> 8) & 255) / 255f,
@@ -151,6 +191,7 @@ public final class Render {
     }
 
     private static void end() {
+        GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GlStateManager.color(1f, 1f, 1f, 1f);

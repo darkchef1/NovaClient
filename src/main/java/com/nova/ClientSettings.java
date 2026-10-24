@@ -4,6 +4,7 @@ import com.nova.module.Category;
 import com.nova.module.Module;
 import com.nova.setting.BooleanSetting;
 import com.nova.setting.ModeSetting;
+import com.nova.setting.NumberSetting;
 
 /** Options in the SETTINGS tab. Not a mod: it never shows in the mods grid. */
 public final class ClientSettings extends Module {
@@ -13,6 +14,8 @@ public final class ClientSettings extends Module {
     public final BooleanSetting hudInF3 = add(new BooleanSetting("Show HUD in F3", false));
     public final BooleanSetting hudInMenus = add(new BooleanSetting("Show HUD behind menus", true));
     public final BooleanSetting snapping = add(new BooleanSetting("HUD editor snapping", true));
+    public final BooleanSetting customMainMenu = add(new BooleanSetting("Nova main menu", true));
+    public final NumberSetting menuFps = add(new NumberSetting("Max main menu FPS", 120, 30, 240, 10));
 
     public ClientSettings() {
         super("Client", "Client-wide options", Category.MISC);

@@ -9,6 +9,16 @@ A Lunar-style PvP client for Minecraft **1.8.9** (Forge), built for Hypixel and 
 3. In the Minecraft Launcher, start the **forge 1.8.9** profile (`1.8.9-forge1.8.9-11.15.1.2318`).
 4. In game, press **Right Shift** to open the menu.
 
+## Main menu
+
+Nova replaces the title screen with its own: an animated night sky that follows your mouse, the Nova logo,
+and Singleplayer / Multiplayer / Settings / Client / Quit. **Client** opens the mod menu, and Forge's
+**Mods** list and **Language** are in the bottom-right corner. To use the vanilla title screen instead,
+turn off **Nova main menu** in the menu's SETTINGS tab.
+
+Vanilla limits menus to 30 FPS outside a world, which makes animations choppy; Nova raises it to
+**Max main menu FPS** (120 by default, also in SETTINGS).
+
 ## Using it
 
 | Action | How |

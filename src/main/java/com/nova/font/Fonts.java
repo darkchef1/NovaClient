@@ -7,6 +7,7 @@ public final class Fonts {
     public static final NovaFont MEDIUM = new NovaFont(true, 8f);
     public static final NovaFont LARGE = new NovaFont(true, 11f);
     public static final NovaFont TITLE = new NovaFont(true, 16f);
+    public static final NovaFont HUGE = new NovaFont(true, 26f);
 
     private Fonts() {
     }

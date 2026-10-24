@@ -74,6 +74,7 @@ public class HudEditorScreen extends GuiScreen {
         float delta = Math.min(0.1f, (now - lastFrame) / 1_000_000_000f);
         lastFrame = now;
 
+        if (mc.theWorld == null) NovaMainMenu.drawBackground(width, height, mouseX, mouseY);
         Render.rect(0, 0, width, height, 0x38000000);
         Render.rect(width / 2f - 0.25f, 0, 0.5f, height, 0x14FFFFFF);
         Render.rect(0, height / 2f - 0.25f, width, 0.5f, 0x14FFFFFF);

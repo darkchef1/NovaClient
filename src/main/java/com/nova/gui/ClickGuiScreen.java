@@ -163,6 +163,7 @@ public class ClickGuiScreen extends GuiScreen {
         float eased = Anim.easeOut(open.get());
         float scale = 0.92f + 0.08f * eased;
 
+        if (mc.theWorld == null) NovaMainMenu.drawBackground(width, height, mouseX, mouseY);
         Render.verticalGradient(0, 0, width, height, Render.alpha(0x88000000, eased), Render.alpha(0xAA000000, eased));
 
         // scale the panel around the screen center; map the mouse into that space too
