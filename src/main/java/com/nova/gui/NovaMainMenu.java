@@ -24,6 +24,7 @@ public class NovaMainMenu extends GuiScreen {
     private static final int BUTTON_W = 170;
     private static final int BUTTON_H = 22;
     private static final int BUTTON_GAP = 6;
+    private static final float BUTTON_RADIUS = 7f;
 
     private static final int STAR_COUNT = 90;
     private static final float[][] STARS = new float[STAR_COUNT][];
@@ -139,9 +140,9 @@ public class NovaMainMenu extends GuiScreen {
             boolean hovered = appear >= 1f && Ui.isInside(lx, ly, x, y, BUTTON_W, BUTTON_H);
             float h = hovers.get(BUTTONS[i], hovered);
 
-            Render.roundedRect(x, y, BUTTON_W, BUTTON_H, 4, Render.alpha(0x14FFFFFF, appear * (1f + h * 1.5f)));
-            Render.outline(x, y, BUTTON_W, BUTTON_H, 0.5f, Render.alpha(0x22FFFFFF, appear * (1f + h * 2f)));
-            if (h > 0.01f) Render.roundedRect(x, y + 4, 2f, BUTTON_H - 8, 1f, Render.alpha(accent, h));
+            Render.roundedRect(x, y, BUTTON_W, BUTTON_H, BUTTON_RADIUS, Render.alpha(0x14FFFFFF, appear * (1f + h * 1.5f)));
+            Render.roundedOutline(x, y, BUTTON_W, BUTTON_H, BUTTON_RADIUS, 0.5f, Render.alpha(0x26FFFFFF, appear * (1f + h * 2f)));
+            if (h > 0.01f) Render.roundedRect(x + 4, y + 6, 2f, BUTTON_H - 12, 1f, Render.alpha(accent, h));
             int textColor = Render.alpha(Render.mix(0xFFC8C8D2, 0xFFFFFFFF, h), appear);
             Fonts.MEDIUM.drawCentered(BUTTONS[i], h * 2f, Fonts.MEDIUM.centerY(y, BUTTON_H), textColor);
         }

@@ -48,6 +48,27 @@ public final class Render {
         end();
     }
 
+    /** A thin border with rounded corners, matching {@link #roundedRect}. Width is in GUI pixels. */
+    public static void roundedOutline(float x, float y, float w, float h, float radius, float width, int color) {
+        if (w <= 0 || h <= 0) return;
+        radius = Math.min(radius, Math.min(w, h) / 2f);
+        int scale = new ScaledResolution(mc).getScaleFactor();
+        begin(color);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+        GL11.glLineWidth(Math.max(1f, width * scale));
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
+        corner(wr, x + w - radius, y + radius, radius, 270);
+        corner(wr, x + w - radius, y + h - radius, radius, 0);
+        corner(wr, x + radius, y + h - radius, radius, 90);
+        corner(wr, x + radius, y + radius, radius, 180);
+        Tessellator.getInstance().draw();
+        GL11.glLineWidth(1f);
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        end();
+    }
+
     private static void corner(WorldRenderer wr, float cx, float cy, float r, int startDeg) {
         for (int deg = startDeg; deg <= startDeg + 90; deg += 10) {
             double rad = Math.toRadians(deg);

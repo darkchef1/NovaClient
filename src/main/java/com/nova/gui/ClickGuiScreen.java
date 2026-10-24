@@ -314,7 +314,7 @@ public class ClickGuiScreen extends GuiScreen {
         float sx = mainX() + mainW() - sw;
         float focus = states.state("search", searchFocused);
         Render.roundedRect(sx, y, sw, TOOLBAR_H, 4, Render.mix(Ui.SURFACE, Ui.SURFACE_HOVER, focus));
-        if (focus > 0.01f) Render.outline(sx, y, sw, TOOLBAR_H, 0.5f, Render.alpha(accent, 0.8f * focus));
+        if (focus > 0.01f) Render.roundedOutline(sx, y, sw, TOOLBAR_H, 4, 0.5f, Render.alpha(accent, 0.8f * focus));
         float textY = Fonts.REGULAR.centerY(y, TOOLBAR_H);
         if (search.isEmpty() && !searchFocused) {
             Fonts.REGULAR.draw("Search...", sx + 7, textY, Ui.TEXT_DIM);

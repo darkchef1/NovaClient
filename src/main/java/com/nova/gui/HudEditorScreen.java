@@ -89,12 +89,12 @@ public class HudEditorScreen extends GuiScreen {
             boolean active = module == selected || module == dragging || module == resizing;
             float hover = hovers.get(module, module == hovered || active);
 
-            Render.rect(pos[0], pos[1], w, h, Render.alpha(0x22FFFFFF, hover));
+            Render.roundedRect(pos[0] - 1, pos[1] - 1, w + 2, h + 2, 3, Render.alpha(0x22FFFFFF, hover));
             ClientEvents.renderHud(module, pos[0], pos[1], true);
-            Render.outline(pos[0], pos[1], w, h, 0.5f, active ? accent : Render.mix(0x35FFFFFF, 0xA0FFFFFF, hover));
+            Render.roundedOutline(pos[0] - 1, pos[1] - 1, w + 2, h + 2, 3, 0.5f, active ? accent : Render.mix(0x35FFFFFF, 0xA0FFFFFF, hover));
 
             if (hover > 0.01f) {
-                Render.rect(pos[0] + w - HANDLE / 2f, pos[1] + h - HANDLE / 2f, HANDLE, HANDLE, Render.alpha(accent, hover));
+                Render.circle(pos[0] + w, pos[1] + h, HANDLE / 2f, Render.alpha(accent, hover));
                 String label = module.getName() + "  " + String.format("%.2fx", module.getScale());
                 float lw = Fonts.SMALL.getWidth(label) + 8;
                 float ly = pos[1] > 14 ? pos[1] - 12 : pos[1] + h + 2;
