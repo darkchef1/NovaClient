@@ -50,7 +50,13 @@ public final class CapeArt {
     }
 
     private static boolean isAnimated(String id) {
-        return id.equals("galaxy") || id.equals("aurora") || id.equals("rainbow");
+        switch (id) {
+            case "galaxy": case "aurora": case "rainbow": case "lava": case "flame":
+            case "matrix": case "neon": case "storm": case "void":
+                return true;
+            default:
+                return false;
+        }
     }
 
     private static ResourceLocation[] build(String id) {
@@ -106,8 +112,222 @@ public final class CapeArt {
             case "ice": ice(g, w, h); break;
             case "crimson": crimson(g, w, h); break;
             case "midnight": midnight(g, w, h); break;
+            case "lava": lava(g, w, h, t); break;
+            case "flame": flame(g, w, h, t); break;
+            case "matrix": matrix(g, w, h, t); break;
+            case "neon": neon(g, w, h, t); break;
+            case "storm": storm(g, w, h, t); break;
+            case "void": voidCape(g, w, h, t); break;
+            case "ocean": ocean(g, w, h); break;
+            case "forest": forest(g, w, h); break;
+            case "sakura": sakura(g, w, h); break;
+            case "gold": gold(g, w, h); break;
+            case "checker": checker(g, w, h); break;
+            case "candy": candy(g, w, h); break;
             default: nova(g, w, h);
         }
+    }
+
+    // ---- animated
+
+    /** Glowing orange cracks drifting slowly over dark rock. */
+    private static void lava(Graphics2D g, int w, int h, float t) {
+        g.setColor(new Color(0x1E0A06));
+        g.fillRect(0, 0, w, h);
+        double a = t * Math.PI * 2;
+        for (int i = 0; i < 4; i++) {
+            float cx = w * (0.2f + 0.2f * i) + (float) Math.sin(a + i) * 4;
+            float cy = h * ((t + i * 0.27f) % 1f);
+            glow(g, cx, cy, w * 0.55f, new Color(255, 90, 20), 0.55f);
+        }
+        g.setStroke(new BasicStroke(2.2f));
+        Random random = new Random(21);
+        for (int i = 0; i < 9; i++) {
+            float x = random.nextFloat() * w;
+            float y = (random.nextFloat() * h + t * h) % h;
+            GeneralPath crack = new GeneralPath();
+            crack.moveTo(x, y);
+            for (int s = 0; s < 4; s++) crack.lineTo(x + (random.nextFloat() - 0.5f) * 14, y + s * 6 + random.nextFloat() * 4);
+            g.setColor(new Color(255, 170 + random.nextInt(60), 40, 220));
+            g.draw(crack);
+        }
+    }
+
+    /** Flames licking up from the bottom of the cape. */
+    private static void flame(Graphics2D g, int w, int h, float t) {
+        g.setPaint(new GradientPaint(0, 0, new Color(0x140404), 0, h, new Color(0x3A0A00)));
+        g.fillRect(0, 0, w, h);
+        Color[] colors = {new Color(255, 60, 0, 200), new Color(255, 140, 0, 200), new Color(255, 220, 80, 210)};
+        for (int layer = 0; layer < 3; layer++) {
+            GeneralPath fire = new GeneralPath();
+            fire.moveTo(0, h);
+            float base = h * (0.35f + layer * 0.18f);
+            for (int x = 0; x <= w; x += 2) {
+                double phase = t * Math.PI * 2 * (layer + 1);
+                float y = base + (float) (Math.sin(x * 0.35 + phase) * 5 + Math.sin(x * 0.13 - phase * 0.7) * 7);
+                fire.lineTo(x, y);
+            }
+            fire.lineTo(w, h);
+            fire.closePath();
+            g.setColor(colors[layer]);
+            g.fill(fire);
+        }
+    }
+
+    /** Falling green characters, like in The Matrix. */
+    private static void matrix(Graphics2D g, int w, int h, float t) {
+        g.setColor(new Color(0x020A04));
+        g.fillRect(0, 0, w, h);
+        int cell = 4;
+        for (int col = 0; col < w / cell; col++) {
+            Random random = new Random(col * 31L + 5); // each column keeps its own speed and pattern every frame
+            float speed = 0.6f + random.nextFloat();
+            float head = ((t * speed + random.nextFloat()) % 1f) * (h + 30) - 15;
+            for (int row = 0; row < h / cell; row++) {
+                float dist = head - row * cell;
+                if (dist < 0 || dist > 30) continue;
+                float alpha = 1f - dist / 30f;
+                boolean lit = random.nextFloat() < 0.75f;
+                if (!lit) continue;
+                g.setColor(dist < 4 ? new Color(200, 255, 200, (int) (255 * alpha)) : new Color(40, 255, 90, (int) (220 * alpha)));
+                g.fillRect(col * cell, row * cell, cell - 1, cell - 1);
+            }
+        }
+    }
+
+    /** A dark cape with a glowing outline that cycles through colors. */
+    private static void neon(Graphics2D g, int w, int h, float t) {
+        g.setColor(new Color(0x08060E));
+        g.fillRect(0, 0, w, h);
+        Color c = Color.getHSBColor(t, 0.85f, 1f);
+        for (int i = 0; i < 4; i++) {
+            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 60 - i * 12));
+            g.setStroke(new BasicStroke(6f - i));
+            g.drawRect(4 + i, 4 + i, w - 9 - i * 2, h - 9 - i * 2);
+        }
+        g.setColor(c);
+        g.setStroke(new BasicStroke(1.5f));
+        g.drawRect(5, 5, w - 11, h - 11);
+        star(g, w / 2f, h * 0.45f, w * 0.22f, w * 0.05f, t * 90f, c);
+    }
+
+    /** Dark clouds with a lightning bolt that flashes now and then. */
+    private static void storm(Graphics2D g, int w, int h, float t) {
+        g.setPaint(new GradientPaint(0, 0, new Color(0x1B2130), 0, h, new Color(0x0A0D14)));
+        g.fillRect(0, 0, w, h);
+        Random random = new Random(9);
+        for (int i = 0; i < 7; i++) {
+            float x = random.nextFloat() * w, y = random.nextFloat() * h * 0.4f;
+            g.setColor(new Color(70, 80, 100, 120));
+            g.fillOval((int) (x - 12 + Math.sin(t * Math.PI * 2 + i) * 3), (int) y, 26, 12);
+        }
+        boolean flash = t > 0.62f && t < 0.75f;
+        if (flash) {
+            glow(g, w / 2f, h * 0.4f, w, new Color(160, 190, 255), 0.5f);
+            GeneralPath bolt = new GeneralPath();
+            bolt.moveTo(w * 0.55f, h * 0.15f);
+            bolt.lineTo(w * 0.38f, h * 0.48f);
+            bolt.lineTo(w * 0.52f, h * 0.48f);
+            bolt.lineTo(w * 0.4f, h * 0.85f);
+            bolt.lineTo(w * 0.66f, h * 0.4f);
+            bolt.lineTo(w * 0.52f, h * 0.4f);
+            bolt.closePath();
+            g.setColor(new Color(255, 255, 230));
+            g.fill(bolt);
+        }
+    }
+
+    /** A black hole: a swirling ring of light around a dark center. */
+    private static void voidCape(Graphics2D g, int w, int h, float t) {
+        g.setColor(new Color(0x050008));
+        g.fillRect(0, 0, w, h);
+        stars(g, w, h, 30, 13, t);
+        float cx = w / 2f, cy = h * 0.45f;
+        for (int i = 0; i < 40; i++) {
+            double angle = i / 40.0 * Math.PI * 2 + t * Math.PI * 2;
+            float r = w * 0.32f + (float) Math.sin(i * 1.7) * 3;
+            float x = cx + (float) Math.cos(angle) * r, y = cy + (float) Math.sin(angle) * r * 0.45f;
+            g.setColor(new Color(180, 90, 255, 150));
+            g.fillOval((int) x - 2, (int) y - 2, 4, 4);
+        }
+        glow(g, cx, cy, w * 0.5f, new Color(140, 60, 255), 0.5f);
+        g.setColor(Color.BLACK);
+        g.fillOval((int) (cx - w * 0.16f), (int) (cy - w * 0.16f), (int) (w * 0.32f), (int) (w * 0.32f));
+    }
+
+    // ---- still
+
+    private static void ocean(Graphics2D g, int w, int h) {
+        g.setPaint(new GradientPaint(0, 0, new Color(0x7FD8FF), 0, h, new Color(0x05325E)));
+        g.fillRect(0, 0, w, h);
+        g.setStroke(new BasicStroke(2f));
+        for (int i = 0; i < 7; i++) {
+            float y = h * (0.3f + i * 0.1f);
+            GeneralPath wave = new GeneralPath();
+            wave.moveTo(0, y);
+            for (int x = 0; x <= w; x += 2) wave.lineTo(x, y + (float) Math.sin(x * 0.3 + i) * 2.5f);
+            g.setColor(new Color(255, 255, 255, 90 - i * 10));
+            g.draw(wave);
+        }
+    }
+
+    private static void forest(Graphics2D g, int w, int h) {
+        g.setPaint(new GradientPaint(0, 0, new Color(0xB8E0C8), 0, h, new Color(0x1E4A2E)));
+        g.fillRect(0, 0, w, h);
+        Random random = new Random(3);
+        for (int layer = 0; layer < 2; layer++) {
+            g.setColor(layer == 0 ? new Color(0x2F6B45) : new Color(0x143322));
+            for (int i = 0; i < 6; i++) {
+                int cx = random.nextInt(w), base = (int) (h * (0.62f + layer * 0.18f)), size = 10 + random.nextInt(8);
+                g.fillPolygon(new int[]{cx, cx + size / 2, cx - size / 2}, new int[]{base - size * 2, base, base}, 3);
+            }
+            g.fillRect(0, (int) (h * (0.62f + layer * 0.18f)), w, h);
+        }
+    }
+
+    private static void sakura(Graphics2D g, int w, int h) {
+        g.setPaint(new GradientPaint(0, 0, new Color(0xFFE4EF), 0, h, new Color(0xF7A8C8)));
+        g.fillRect(0, 0, w, h);
+        Random random = new Random(11);
+        for (int i = 0; i < 26; i++) {
+            int x = random.nextInt(w), y = random.nextInt(h), s = 3 + random.nextInt(4);
+            g.setColor(new Color(255, 120 + random.nextInt(60), 170, 210));
+            g.fillOval(x, y, s, s - 1);
+        }
+        g.setColor(new Color(0x6B3A2A));
+        g.setStroke(new BasicStroke(2.5f));
+        g.drawLine(0, (int) (h * 0.2f), (int) (w * 0.7f), (int) (h * 0.35f));
+        g.drawLine((int) (w * 0.4f), (int) (h * 0.29f), (int) (w * 0.55f), (int) (h * 0.15f));
+    }
+
+    private static void gold(Graphics2D g, int w, int h) {
+        g.setPaint(new GradientPaint(0, 0, new Color(0xFFE38A), w, h, new Color(0xB8860B)));
+        g.fillRect(0, 0, w, h);
+        g.setColor(new Color(255, 255, 255, 70));
+        g.setStroke(new BasicStroke(4f));
+        g.drawLine(-5, h / 3, w + 5, h / 5);
+        g.setColor(new Color(120, 80, 0, 140));
+        g.setStroke(new BasicStroke(2f));
+        g.drawRect(3, 3, w - 7, h - 7);
+        star(g, w / 2f, h * 0.45f, w * 0.25f, w * 0.06f, 0, new Color(255, 250, 220));
+    }
+
+    private static void checker(Graphics2D g, int w, int h) {
+        int cell = 8;
+        for (int x = 0; x < w; x += cell) {
+            for (int y = 0; y < h; y += cell) {
+                g.setColor(((x + y) / cell) % 2 == 0 ? new Color(0x111111) : new Color(0xF2F2F2));
+                g.fillRect(x, y, cell, cell);
+            }
+        }
+    }
+
+    private static void candy(Graphics2D g, int w, int h) {
+        g.setColor(new Color(0xFFF4F8));
+        g.fillRect(0, 0, w, h);
+        g.setColor(new Color(0xFF4F7B));
+        g.setStroke(new BasicStroke(6f));
+        for (int i = -h; i < w + h; i += 14) g.drawLine(i, 0, i + h, h);
     }
 
     private static void nova(Graphics2D g, int w, int h) {

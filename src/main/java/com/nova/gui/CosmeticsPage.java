@@ -212,9 +212,24 @@ final class CosmeticsPage {
             case "angel": return new ItemStack(Items.feather);
             case "dragon": return new ItemStack(Blocks.dragon_egg);
             case "crystal": return new ItemStack(Items.prismarine_crystals);
+            case "phoenix": return new ItemStack(Items.blaze_powder);
+            case "demon": return new ItemStack(Items.ender_eye);
+            case "butterfly": return new ItemStack(Blocks.red_flower, 1, 2);
+            case "fairy": return new ItemStack(Items.glowstone_dust);
+            case "bat": return new ItemStack(Items.leather);
             case "halo": return new ItemStack(Items.gold_nugget);
+            case "rainbow_halo": return new ItemStack(Items.nether_star);
             case "crown": return new ItemStack(Items.golden_helmet);
+            case "horns": return new ItemStack(Items.fire_charge);
+            case "cat_ears": return new ItemStack(Items.fish);
+            case "bunny_ears": return new ItemStack(Items.carrot);
+            case "top_hat": return new ItemStack(Items.leather_helmet);
+            case "flower_crown": return new ItemStack(Blocks.red_flower, 1, 7);
             case "rainbow_stars": return new ItemStack(Items.fireworks);
+            case "hearts": return new ItemStack(Items.cake);
+            case "embers": return new ItemStack(Items.magma_cream);
+            case "snow": return new ItemStack(Items.snowball);
+            case "atom": return new ItemStack(Items.ender_pearl);
             default: return new ItemStack(Items.nether_star);
         }
     }

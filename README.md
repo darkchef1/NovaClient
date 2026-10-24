@@ -16,10 +16,10 @@ click a card to put it on, click it again to take it off. One per slot:
 
 | Slot | Cosmetics |
 |---|---|
-| Capes | Nova, Galaxy\*, Aurora\*, Rainbow\*, Sunset, Frost, Crimson, Midnight, plus your own |
-| Wings | Angel, Dragon, Nova Crystal (flap faster when you sprint or jump) |
-| Head | Halo, Crown |
-| Aura | Star Aura, Rainbow Aura (stars orbiting you) |
+| Capes | Nova, Galaxy\*, Aurora\*, Rainbow\*, Lava\*, Flame\*, Matrix\*, Neon\*, Storm\*, Void\*, Sunset, Frost, Crimson, Midnight, Ocean, Forest, Sakura, Gold, Checker, Candy, plus your own |
+| Wings | Angel, Phoenix, Dragon, Demon, Bat, Nova Crystal, Fairy, Butterfly (flap faster when you sprint or jump) |
+| Head | Halo, Rainbow Halo, Crown, Devil Horns, Cat Ears, Bunny Ears, Top Hat, Flower Crown |
+| Aura | Star Aura, Rainbow Aura, Love, Embers, Snowfall, Atom |
 
 \* animated
 
